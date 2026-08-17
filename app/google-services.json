@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "935615767033",
+    "project_id": "parentmonitoringapp-a123",
+    "storage_bucket": "parentmonitoringapp-a123.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:935615767033:android:31ea66e16043c1c102dd28",
+        "android_client_info": {
+          "package_name": "com.example.parentingmonitoringapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlk45T5VU_hJZbb5HkWhpoJd3g2U_RPBc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
