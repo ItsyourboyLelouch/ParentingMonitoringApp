@@ -50,22 +50,32 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
     private fun logAttendanceAndNotify(studentId: String, parentUid: String, type: String) {
         val db = FirebaseFirestore.getInstance()
 
-        // 1. I-save sa attendance collection
-        val attendanceData = hashMapOf(
-            "studentId" to studentId,
-            "type" to type,
-            "timestamp" to Timestamp.now()
-        )
+        if (type == "OUT") {
+            // Hanapin ang pinaka-huling IN record para makuha ang time spent
+            db.collection("attendance")
+                .whereEqualTo("studentId", studentId)
+                .whereEqualTo("type", "IN")
+                .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                .limit(1)
+                .get()
+                .addOnSuccessListener { docs ->
+                    val lastIn = docs.documents.firstOrNull()?.getTimestamp("timestamp")
+                    val now = Timestamp.now()
+                    val durationMinutes = if (lastIn != null) {
+                        (now.seconds - lastIn.seconds) / 60
+                    } else null
 
-        db.collection("attendance").add(attendanceData)
-            .addOnSuccessListener {
-                Log.d("GeofenceReceiver", "Attendance logged: $studentId - $type")
-            }
-            .addOnFailureListener { e ->
-                Log.e("GeofenceReceiver", "Failed to log attendance: ${e.message}")
-            }
+                    saveAttendanceRecord(studentId, type, now, durationMinutes, lastIn)
+                }
+                .addOnFailureListener {
+                    // Kung hindi mahanap ang IN record, i-save pa rin ang OUT nang walang duration
+                    saveAttendanceRecord(studentId, type, Timestamp.now(), null, null)
+                }
+        } else {
+            saveAttendanceRecord(studentId, type, Timestamp.now(), null, null)
+        }
 
-        // 2. Kunin ang parent email at student name, tapos magpadala ng email
+        // Kunin ang parent email at student name, tapos magpadala ng email
         db.collection("users").document(parentUid).get()
             .addOnSuccessListener { parentDoc ->
                 val parentEmail = parentDoc.getString("email") ?: return@addOnSuccessListener
@@ -90,6 +100,29 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
             }
             .addOnFailureListener { e ->
                 Log.e("GeofenceReceiver", "Failed to get parent email: ${e.message}")
+            }
+    }
+
+    private fun saveAttendanceRecord(
+        studentId: String, type: String, timestamp: Timestamp,
+        durationMinutes: Long?, pairedInTimestamp: Timestamp?
+    ) {
+        val db = FirebaseFirestore.getInstance()
+
+        val attendanceData = hashMapOf<String, Any>(
+            "studentId" to studentId,
+            "type" to type,
+            "timestamp" to timestamp
+        )
+        if (durationMinutes != null) attendanceData["durationMinutes"] = durationMinutes
+        if (pairedInTimestamp != null) attendanceData["pairedInTimestamp"] = pairedInTimestamp
+
+        db.collection("attendance").add(attendanceData)
+            .addOnSuccessListener {
+                Log.d("GeofenceReceiver", "Attendance logged: $studentId - $type")
+            }
+            .addOnFailureListener { e ->
+                Log.e("GeofenceReceiver", "Failed to log attendance: ${e.message}")
             }
     }
 }

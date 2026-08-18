@@ -24,7 +24,7 @@
         android:id="@+id/btnAttendance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Encode Attendance (In/Out)"
+        android:text="View Attendance"
         android:layout_marginTop="8dp"/>
 
     <Button
@@ -45,14 +45,14 @@
         android:id="@+id/btnAllowance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Allowance Liquidation"
+        android:text="Send Expense Notice"
         android:layout_marginTop="8dp"/>
 
     <Button
         android:id="@+id/btnReports"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Attendance / Late Reports"
+        android:text="Reports"
         android:layout_marginTop="8dp"/>
     <Button
         android:id="@+id/btnTestEmail"

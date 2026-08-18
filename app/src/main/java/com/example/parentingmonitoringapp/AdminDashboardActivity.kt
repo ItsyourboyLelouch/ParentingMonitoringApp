@@ -16,7 +16,7 @@ class AdminDashboardActivity : AppCompatActivity() {
             Toast.makeText(this, "Manage Students - coming soon", Toast.LENGTH_SHORT).show()
         }
         findViewById<Button>(R.id.btnAttendance).setOnClickListener {
-            Toast.makeText(this, "Attendance - coming soon", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, AttendanceRecordsActivity::class.java))
         }
         findViewById<Button>(R.id.btnExamSchedule).setOnClickListener {
             startActivity(Intent(this, ExamScheduleActivity::class.java))
@@ -25,10 +25,10 @@ class AdminDashboardActivity : AppCompatActivity() {
             Toast.makeText(this, "Meetings - coming soon", Toast.LENGTH_SHORT).show()
         }
         findViewById<Button>(R.id.btnAllowance).setOnClickListener {
-            Toast.makeText(this, "Allowance - coming soon", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, NoticeActivity::class.java))
         }
         findViewById<Button>(R.id.btnReports).setOnClickListener {
-            Toast.makeText(this, "Reports - coming soon", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, ReportsActivity::class.java))
         }
         findViewById<Button>(R.id.btnTestEmail).setOnClickListener {
             EmailSender.sendEmail(
